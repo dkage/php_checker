@@ -1,4 +1,3 @@
-import io
 import os
 import re
 import sys
@@ -25,20 +24,22 @@ def php_syntax_test(php_path, php_file):
     return lint != 0
 
 
-# Check if has a
+# Check if path parameter is passed down
 if len(sys.argv) == 1:
-    print('Insira o caminho absoluto do diretório a ser analisado')
+    print('Insira o caminho absoluto do diretório a ser analisado como parametro na chamada do script')
+    print('Caso deseje remover as cores dos prints no terminal adicionar parametro "no_color" como paramatetro'
+          ' após o diretório')
     sys.exit()
 
 # Analyzed project root folder - absolute path
 path = sys.argv[1]
-
+to_file_mode = sys.argv[2] if len(sys.argv) >= 3 else ''
 # Checks if the directory exists
 if not os.path.isdir(path):
     print('Diretório não encontrado')
     sys.exit()
 
-print('Analisando arquivos...')
+print('Analisando arquivos...\n\n')
 
 
 # Creates array with every directory and subdirs and remove ignored directories
@@ -56,6 +57,7 @@ all_project_files = []
 all_php_filepaths = []
 all_php_filenames = []
 path_dict = dict()
+
 # Generate array with every filename
 for directory in dirs_array:
     all_files_in_dir = get_iterator_all_files_name(directory)
@@ -123,7 +125,10 @@ for directory in tree_dict:
         continue
 
     # Print directory name
-    print(colored(directory, 'blue'))
+    if to_file_mode:
+        print(directory)
+    else:
+        print(colored(directory, 'blue'))
     for file in tree_dict[directory]:
         errors = []
         warnings = []
@@ -146,8 +151,13 @@ for directory in tree_dict:
             file_color = 'red'
         elif warnings:
             file_color = 'yellow'
+        if to_file_mode:
+            file_color = ''
         # Print filename
-        print(colored('  - ' + file, file_color))
+        if to_file_mode:
+            print('  - ' + file)
+        else:
+            print(colored('  - ' + file, file_color))
 
         # Print errors messages
         for error in errors:
