@@ -22,21 +22,25 @@ def php_syntax_test(php_path, php_file):
     lint = os.system(cli_command)
     return lint != 0
 
-# INPUT
 
-# Check if has the path parameter has been given
+# INPUT
+# Check if parameter has been passed on .py execution command
 if len(sys.argv) == 1:
-    print('Insira o caminho absoluto do diretório a ser analisado como parametro na chamada do script')
-    print('Caso deseje remover as cores dos prints no terminal adicionar parametro "no_color" como paramatetro'
-          ' após o diretório')
+    print('Insira o caminho absoluto do diretorio a ser analisado como parametro na chamada do script')
+    print('Caso deseje remover as cores dos prints no terminal adicionar parametro "no_color" como parametro'
+          ' apos o diretorio')
     sys.exit()
 
-# Analyzed project root folder - absolute path
+# Variable 'path' = to be analyzed project root folder - absolute path
 path = sys.argv[1]
+
+# Second variable (could actually be anything, not only no_color), sets to "file_mode" to save on file.
+# In other words, set the output to not color the prints because it only works right for terminal output.
 to_file_mode = sys.argv[2] if len(sys.argv) >= 3 else ''
+
 # Check if the directory exists
 if not os.path.isdir(path):
-    print('Diretório não encontrado')
+    print('Diretorio nao encontrado')
     sys.exit()
 
 # END INPUT
@@ -44,7 +48,7 @@ if not os.path.isdir(path):
 print('Analisando arquivos...\n\n')
 
 
-# Create array with every directory and subdirs and remove ignored directories
+# Create array with every directory and subdirs and remove ignored directories (.git, .idea [if needed add more here])
 dirs_array = []
 for x in os.walk(path):
     cur_path = x[0]
@@ -66,7 +70,7 @@ for directory in dirs_array:
     all_files_in_dir = get_iterator_all_files_name(directory)
     all_project_files += all_files_in_dir
 
-    # Get all PHP files and filenames
+    # Generate array with all PHP files and filenames
     for file in all_files_in_dir:
         ext = file.rsplit('.', 1)[-1]
         if ext == 'php':
@@ -80,13 +84,18 @@ all_php_filepaths.sort()
 unref_php_filenames = list(set(all_php_filenames))
 unref_php_filenames.sort()
 
+# This loop structure open and loads each PHP file on a string, then searches inside it for each PHP filename stored
+# inside 'unref_php_filenames' array, if filename is found it probably means it is being used (include or redirects)
+# and is taken out of the array, only the filenames without references stays on 'unref_php_filenames' array
 for file in all_php_filepaths:
     with open(file, 'r',  encoding='utf-8', errors='ignore') as open_file:
         file_string = open_file.read()
+        # Removes all comments to remove false positive where files are being referenced inside comment sections
+        treated_file_string = re.sub(r"((/\*).*(\*/))|((/\*).*$)|(//[^\n]*)", '', file_string, flags=re.DOTALL)
 
         for filename in unref_php_filenames:
             # Remove filename from the list if a reference is found to optimize the next iterations
-            if filename in file_string:
+            if filename in treated_file_string:
                 unref_php_filenames.remove(filename)
 
 
@@ -140,11 +149,12 @@ for directory in dirs_array:
 # OUTPUT
 
 for directory in tree_dict:
-    # Hide directories without PHP files
+    # Hides all directories without PHP files
     if not tree_dict[directory]:
         continue
 
     # Print directory name
+    print('\n\n')
     if to_file_mode:
         print(directory)
     else:
@@ -156,15 +166,15 @@ for directory in tree_dict:
         # Create messages based on the tests results
         results = tree_dict[directory][file]
         if results[0]:
-            errors.append('Extensão PHP inválida')
+            errors.append('Extensao PHP invalida')
         if results[1]:
-            errors.append('Erro na sintáxe')
+            errors.append('Erro na sintaxe')
         if results[2]:
-            warnings.append('Utiliza função pg_connect')
+            warnings.append('Utiliza funcao pg_connect')
         if results[3]:
             warnings.append('Salva arquivo no servidor')
         if results[4]:
-            errors.append('Arquivo não referenciado')
+            errors.append('Arquivo nao referenciado')
 
         # Set file status color
         file_color = 'green'
@@ -172,19 +182,24 @@ for directory in tree_dict:
             file_color = 'red'
         elif warnings:
             file_color = 'yellow'
+
+        # If file_mode active, then all colors all removed or color codes will break the text
         if to_file_mode:
             file_color = ''
         # Print filename
         if to_file_mode:
-            print('  - ' + file)
+            output = directory + file
         else:
-            print(colored('  - ' + file, file_color))
+            output = colored(directory + file, file_color)
 
         # Print errors messages
         for error in errors:
-            print('      ' + error)
+            output += '  -  ' + error
+
+
         # Print warnings messages
         for warning in warnings:
-            print('      ' + warning)
+            output += '  -  ' + warning
 
+        print(output)
 # END OUTPUT
