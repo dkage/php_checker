@@ -4,6 +4,8 @@ This project was created to analyze PHP projects, given the directory of the pro
 
 This script was created because at my workplace we had dozens of old legacy PHP web applications (some even used PHP 5.3), and the department director asked me to create a script to analyze those old projects and find pieces of code that we should alter or remove, to clean the projects from non-used php files, connections to databases without using our new database class and so on.
 
+### What kind of thing is analyzed?
+
 This script lookouts for the following things on given PHP project to iterate:
 
 - **check syntax using php lint CLI to checks for files with errors** (php -l 'filename')
