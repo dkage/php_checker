@@ -2,9 +2,9 @@
 
 This project was created to analyze PHP projects, given the directory of the project it follows recursively through each subdir inside it.
 
-This script was created because at my workplace we had dozens of old legacy PHP web applications (some even used PHP 5.3), and the department director asked me to create a script to analyze those old projects and find pieces of code that we should alter or remove, to clean the projects from non-used php files, connections to databases without using our new database class and so on.
+This script was created because at my workplace we had dozens of old legacy PHP web applications (some using PHP 5.3, others 5.4), so the head director asked me to create a script to analyze those old projects (but still in production) and find pieces of code that we should alter or remove, to clean the projects from non-used php files, connections to databases without using our new database class, test files and so on.
 
-### What kind of thing is analyzed?
+## What kind of thing is analyzed?
 
 This script lookouts for the following things on given PHP project to iterate:
 
@@ -13,7 +13,7 @@ This script lookouts for the following things on given PHP project to iterate:
 - **files that are not index.php and are not being referenced anywhere in the project** (no 'include'/'require' and/or 'redirects'/'href' calls)
 - **saves files to the server** (checks if PHP script uses a function to save file on server HD (upload by user), as our new security guidelines demands that every file should be stored in a specific folder we needed to check for older scripts that save those files in other directories)
 
-### How to use
+## How to use
 
 To use the script you need to call it on CLI using Python3.
 
