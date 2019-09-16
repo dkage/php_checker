@@ -6,12 +6,12 @@ This script was created because at my workplace we had dozens of old legacy PHP 
 
 ## What kind of thing is analyzed?
 
-This script lookouts for the following things on given PHP project to iterate:
+This script lookouts for the following things on a given PHP project to iterate:
 
 - **check syntax using php lint CLI to checks for files with errors** (php -l 'filename')
-- **uses of _pg_connect_** (as we are now using a new database connection class that is more secure, we needed to find the old connections the used pg_connect to make the proper change to adapt the legacy projects)
+- **uses of _pg_connect_** (as we are now using a new database connection class that is more secure, we needed to find the old connections that used pg_connect to make the proper changes to adapt the legacy projects to new class)
 - **files that are not index.php and are not being referenced anywhere in the project** (no 'include'/'require' and/or 'redirects'/'href' calls)
-- **saves files to the server** (checks if PHP script uses a function to save file on server HD (upload by user), as our new security guidelines demands that every file should be stored in a specific folder we needed to check for older scripts that save those files in other directories)
+- **saves files to the server** (checks if PHP script uses a function to save file on server HD (upload by user), as our new security guidelines demands that every file should be stored in a specific folder so we needed to check for older scripts that save those files in other directories)
 
 ## How to use
 
@@ -23,9 +23,9 @@ You need to install _colorterm_ package using PIP3 first, as the output is prese
 
 Then you can run the script and analyze a PHP project:
 
-```python3 report_project.py <full_php_project_path>```
+```python3 report_project.py <absolute_php_project_path>```
 
-The output will be the name of files with their full_path followed by the errors/warnings found, colored depending on the problems encountered. 
+The output will be the name of files with their full path followed by the errors/warnings found, colored depending on the problems encountered. 
 
 If you want the output without the colors you should just put a second parameter so you can put the output in a file without the color coding breaking the text.
 
