@@ -1,6 +1,6 @@
 # PHP project analyzer
 
-This project was created to analyze PHP projects, given the directory of the project it follows recursively through each subdir inside it.
+This project was created to analyze PHP projects. Given the directory of the project it follows recursively through each subdir inside it.
 
 This script was created because at my workplace we had dozens of old legacy PHP web applications (some using PHP 5.3, others 5.4), so the head director asked me to create a script to analyze those old projects (but still in production) and find pieces of code that we should alter or remove, to clean the projects from non-used php files, connections to databases without using our new database class, test files and so on.
 
