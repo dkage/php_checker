@@ -4,6 +4,7 @@ import sys
 from termcolor import colored
 
 
+
 def get_iterator_all_files_name(dir_path):
     """Return array with all files in directory, and another array with all subdirs in directory"""
     files_in_dir = os.listdir(dir_path)
